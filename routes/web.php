@@ -7,6 +7,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -34,6 +35,14 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('tags', TagController::class)->names('tags'); 
     // Category Routes
     Route::resource('categories', CategoryController::class)->names('categories'); 
+});
+
+
+Route::group(['middleware' => ['auth','role:admin|super_admin|editor']], function () {
+    Route::resource('posts', PostController::class)->names('posts');
+    Route::resource('users', UserController::class)->names('users');
+    Route::resource('roles', RoleController::class)->names('roles');
+    Route::resource('permissions', PermissionController::class)->names('permissions');
 });
 
 require __DIR__.'/auth.php';
